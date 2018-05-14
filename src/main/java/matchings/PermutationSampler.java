@@ -3,6 +3,11 @@ package matchings;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jdt.internal.formatter.FormatJavadocBlock;
+import org.jgraph.graph.ConnectionSet;
+
+import bayonet.math.SpecialFunctions;
+
 import bayonet.distributions.Random;
 import blang.core.LogScaleFactor;
 import blang.distributions.Generators;
@@ -10,6 +15,8 @@ import blang.mcmc.ConnectedFactor;
 import blang.mcmc.SampledVariable;
 import blang.mcmc.Sampler;
 import briefj.collections.UnorderedPair;
+
+
 
 /**
  * Each time a Permutation is encountered in a Blang model, 
@@ -27,11 +34,32 @@ public class PermutationSampler implements Sampler {
    * resampled. 
    */
   @ConnectedFactor List<LogScaleFactor> numericFactors;
+  
+  
+  
+  
 
   @Override
   public void execute(Random rand) {
-    // Fill this. 
-  }
+	  Permutation currentPerm = permutation;
+	  double currentDensity = logDensity();
+	  
+	  permutation.sampleUniform(rand);
+	  double proposedDensity = - SpecialFunctions.logFactorial(permutation.componentSize()); 
+
+	  double alpha = Math.min(1, Math.exp(proposedDensity)/Math.exp(currentDensity));
+
+	  
+	  if (! rand.nextBernoulli(alpha)) {
+		  permutation = currentPerm;
+		  }
+	  
+		
+	}
+
+  
+  
+ 
   
   private double logDensity() {
     double sum = 0.0;

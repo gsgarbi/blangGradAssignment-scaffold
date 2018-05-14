@@ -5,6 +5,8 @@ import blang.mcmc.Samplers
 import java.util.Random
 import static java.util.Collections.sort
 import static java.util.Collections.shuffle
+import static java.util.Collections.replaceAll
+
 
 /**
  * A permutation or equivalently, a bipartite perfect 
@@ -26,4 +28,17 @@ import static java.util.Collections.shuffle
     sort(connections) // sort first to make independent from the current config. 
     shuffle(connections, random)
   }
+  
+    def void sampleNew(int[] l) {
+    	
+   
+    	val int k = 0;
+    for (i: l)
+    	replaceAll(connections, k, i)
+    	}
+    	
+
+  
+  
+  
 }

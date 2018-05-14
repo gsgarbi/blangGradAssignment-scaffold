@@ -4,6 +4,7 @@ import java.util.List;
 
 import bayonet.distributions.Multinomial;
 import bayonet.distributions.Random;
+import bayonet.math.SpecialFunctions;
 import blang.core.LogScaleFactor;
 import blang.distributions.Generators;
 import blang.mcmc.ConnectedFactor;
@@ -29,7 +30,22 @@ public class BipartiteMatchingSampler implements Sampler {
 
   @Override
   public void execute(Random rand) {
-    // Fill this. 
+	  // Example: 1 4 -1 -1 2 -> 2 3 -1 0 -1 (-1: unlinked)
+	  BipartiteMatching currentMatching = matching;
+	  double currentDensity = logDensity();
+	  
+	  matching.sampleUniform(rand);
+	  double proposedDensity = logDensity(); //
+
+	  double alpha = Math.min(1, Math.exp(proposedDensity)/Math.exp(currentDensity));
+
+	  
+	  if (! rand.nextBernoulli(alpha)) {
+		  matching = currentMatching;
+		  }
+	  
+	 
+    
   }
   
   private double logDensity() {

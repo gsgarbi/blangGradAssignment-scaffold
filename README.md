@@ -2,6 +2,10 @@
 
 ## Prerequisites
 
+[![Build Status](https://travis-ci.org/gsgarbi/blangGradAssignment-scaffold.png?branch=master)](https://travis-ci.org/gsgarbi/blangGradAssignment-scaffold)
+
+
+
 I assume you have already done the following (lecture and office hour last week):
 
 - Install Blang IDE.

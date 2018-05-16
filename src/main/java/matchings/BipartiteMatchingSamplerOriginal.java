@@ -16,7 +16,7 @@ import briefj.collections.UnorderedPair;
  * Each time a Permutation is encountered in a Blang model, 
  * this sampler will be instantiated. 
  */
-public class BipartiteMatchingSamplerCorrect implements Sampler {
+public class BipartiteMatchingSamplerOriginal implements Sampler {
   /**
    * This field will be populated automatically with the 
    * permutation being sampled. 
@@ -35,9 +35,6 @@ public class BipartiteMatchingSamplerCorrect implements Sampler {
 	  //get the current log density
 	  double logDensityBefore = logDensity();
 	  
-	  //factor for new MCMC proposal
-	  double factor = 0.5;
-	  
 	  // choose randomly one vertex in the first component and a free vertex in component 2
 	  int i = Generators.discreteUniform(rand, 0, matching.componentSize());
 	  int j = 0;  // initialize it
@@ -54,15 +51,18 @@ public class BipartiteMatchingSamplerCorrect implements Sampler {
 	  // if I dont decide to make a connection operation, disconnect 
 	  // and get q's if a connection was not made
 
-		  double logQAfterGivenBefore = - factor*Math.log(matching.componentSize());		  
+		  double logQAfterGivenBefore = - Math.log(matching.componentSize());	  
 		  matching.getConnections().set(i, BipartiteMatching.FREE);
-		  double logQBeforeGivenAfter = - factor*Math.log(matching.componentSize() * matching.free2().size());
+		  double logQBeforeGivenAfter = - Math.log(matching.componentSize() * matching.free2().size());
 	  
 	  // else, choose to connect to one of the free vertexes of component 2
 	  if (connectOp) {
 		  // q's if a connection was made
-		  logQBeforeGivenAfter = - factor*Math.log(matching.componentSize());
-		  logQAfterGivenBefore = - factor*Math.log(matching.componentSize() * matching.free2().size());
+		  logQBeforeGivenAfter = 
+				  - Math.log(matching.componentSize());
+		  logQAfterGivenBefore =
+				  - Math.log(matching.componentSize() * 
+				  matching.free2().size());
 
 		  matching.getConnections().set(i,j);
 	  }

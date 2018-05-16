@@ -41,18 +41,15 @@ public class PermutationSampler implements Sampler {
 
   @Override
   public void execute(Random rand) {
-	  Permutation currentPerm = permutation;
-	  double currentDensity = logDensity();
-	  
-	  permutation.sampleUniform(rand);
-	  double proposedDensity = - SpecialFunctions.logFactorial(permutation.componentSize()); 
-
-	  double alpha = Math.min(1, Math.exp(proposedDensity)/Math.exp(currentDensity));
-
-	  
-	  if (! rand.nextBernoulli(alpha)) {
-		  permutation = currentPerm;
-		  }
+	  UnorderedPair<Integer, Integer> pair = Generators.distinctPair(rand, permutation.componentSize());
+	    double logDensityBefore = logDensity();
+	    Collections.swap(permutation.getConnections(), pair.getFirst(), pair.getSecond());
+	    double logDensityAfter = logDensity();
+	    double acceptPr = Math.min(1.0, Math.exp(logDensityAfter - logDensityBefore)); 
+	    if (Generators.bernoulli(rand, acceptPr))
+	      ;
+	    else
+	      Collections.swap(permutation.getConnections(), pair.getFirst(), pair.getSecond());
 	  
 		
 	}

@@ -1,11 +1,6 @@
 package matchings;
 
-
-import java.util.*;
-
-import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
-
-import com.mxgraph.shape.mxActorShape;
+import java.util.List;
 
 //time 91s, 73s, 68s, 83s
 
@@ -23,7 +18,7 @@ import blang.mcmc.Sampler;
  * Each time a Permutation is encountered in a Blang model, 
  * this sampler will be instantiated. 
  */
-public class BipartiteMatchingSampler implements Sampler {
+public class BipartiteMatchingSamplerBLBadAlg implements Sampler {
   /**
    * This field will be populated automatically with the 
    * permutation being sampled. 
@@ -44,36 +39,23 @@ public class BipartiteMatchingSampler implements Sampler {
 	  qBeforeGivenAfter, 
 	  logQAfterGivenBefore, 
 	  logQBeforeGivenAfter;
-	  int numConnected,
-	  size = matching.componentSize();
-	  ArrayList<Double> probVector;
+	  int numConnected;
 	  
 	  //get the current log density
 	  double logDensityBefore = logDensity();
+  
+	  // choose randomly one vertex in the first component and a free vertex in component 2
+	  int i = Generators.discreteUniform(rand, 0, matching.componentSize());
+	  int j = 0; 
+	  if (matching.free2().isEmpty())
+		  ;
+	  else {
+	  int k = Generators.discreteUniform(rand, 0, matching.free2().size());
+	  j = matching.free2().get(k);
+	  }
 	  
-	  ArrayList <BipartiteMatching> nextStates; 
-	  for (int i = 0; i < size; i++) {
-		  if (matching.free1().contains(i)) {
-//			  #delete one edge
-			  // add new matching to nextStates
-//			  #get logDensity for the new matching
-			  // add logDensityAfter to list of prob
-			  // undo the operation
-			  ;	  }
-
-		  else {
-			  for (int j: matching.free2()) {
-//				  #add one edge
-				  // add new matching to nextStates
-//				  #get logDensityAfter for the new matching
-				  // add logDensity to list of prob
-				  // get 
-				  // undo the operation
-			  }
-			  
-			  Random.nextCategorical(rand, probVector)
-			  // alpah = 
-	 
+	  //if that vertex is not connected, decide to make a connection operation
+	  boolean connectOp = matching.free1().contains(i);
 	  
 	  if (connectOp) {
 		  // get logQ's if a connection was made
@@ -89,8 +71,8 @@ public class BipartiteMatchingSampler implements Sampler {
 				  matching.free1().size();
 		  logQBeforeGivenAfter = Math.log(qBeforeGivenAfter/normF);
 
-		  // create part of probability vector
-
+		  // Propose a matching by creating and edge between i and j
+		  matching.getConnections().set(i,j);
 	  }
 	  
 	  else {
@@ -142,18 +124,4 @@ public class BipartiteMatchingSampler implements Sampler {
       sum += f.logDensity();
     return sum;
     }
-  private double nchoosek(int n, int k) {
-		return Math.rint(Math.exp(SpecialFunctions.logBinomial(n, k)));
-	}
-  
-  private BipartiteMatching nextMatching(BipartiteMatching m) {;}
-
-				  
-			  
-			  
-			  
-			  
-		
-		  
   }
-

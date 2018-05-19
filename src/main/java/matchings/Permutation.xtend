@@ -4,9 +4,11 @@ import org.eclipse.xtend.lib.annotations.Data
 import blang.mcmc.Samplers
 import java.util.Random
 import static java.util.Collections.sort
+import static java.util.Collections.swap
 import static java.util.Collections.shuffle
 import static java.util.Collections.replaceAll
-
+import java.util.Collection
+import java.util.List
 
 /**
  * A permutation or equivalently, a bipartite perfect 
@@ -36,6 +38,13 @@ import static java.util.Collections.replaceAll
     for (i: l)
     	replaceAll(connections, k, i)
     	}
+  
+  def List<Integer> swapConnections(int i, int j){
+  	
+  	swap(connections, i, j)
+  	return connections
+  	
+  }
     	
 
   

@@ -3,19 +3,94 @@ package matchings
 import matchings.Permutation
 
 model PermutedClustering {
-  param Integer nGroups
-  param Integer groupSize
+  param Integer nGroups //20
+  param Integer groupSize //5
   random List<RealVar> means ?: latentRealList(groupSize)
   random List<RealVar> variances ?: latentRealList(groupSize)
-  random List<Permutation> permutations ?: {
+  random List<Permutation> permutations ?: { // list of permutations as defined in matchings.Permutations
     val result = new ArrayList
-    for (group : 0 ..< nGroups) 
+    for (group : 0 ..< nGroups)  
       result.add(new Permutation(groupSize))
     return result
   }
   random Matrix observations ?: latentMatrix(nGroups, groupSize)
   
+  // A game result looks like (0.3, 4.2, 2.8, 2.2, 3.1)
+  // A permutation looks like (1, 3, 0, 2, 4)
+  // Can I make result.get(i) | RealVar v = variance.get(i) ~ Normal(permutations.get(i), v) // permutation X real number. Categorical?
+  // work with matrices in laws field?
+  // observation 20x5
+  // pre-establish an order in the column?
+  // whats the probability of being correctly sorted?
+  
+  // ESS per second
+  
+ 
+  
   laws {
-    // Fill this. 
-  }
+  	
+  	variances.get(0) ~ Exponential(10.0)
+  	
+  	means.get(0) ~ ContinuousUniform(0,1) 
+  	for (Integer i : 1 ..< groupSize) { 
+    means.get(i) | RealVar previous = means.get(i-1) ~ ContinuousUniform(previous, previous + 1)
+    variances.get(i) ~ Exponential(10.0)
+    }
+    
+    
+    
+for (Integer i: 0 ..< nGroups){
+	
+	permutations.get(i) ~ UniformPermutation
+	
+	for (Integer j: 0 ..< groupSize){
+		
+	
+	  observations.getRealVar(i,j) | Permutation perm = permutations.get(i), means, variances, j ~ 
+	  Normal(
+	  	means    .get(perm.getConnections.get(j)), 
+	  	variances.get(perm.getConnections.get(j))
+	  )
+	  
+	  // concatenate vectors?
+	}
 }
+
+    
+    
+//    permutations.get(i) | means.get(i) ~ 
+//    
+//    new PMF<Integer> [
+//    	
+//    	for (j: nGroups){
+//    		
+//    increment()
+
+//    
+
+
+    
+    }
+    
+    	
+
+    }
+    
+    
+    
+
+
+//    for (int i: 0 ..< nGroups){
+//    	permutations.get(i).getConnections 
+//    }
+//    for (int i: 0 ..<groupSize){}
+//    
+//    {
+    	
+
+    	
+    
+    // scores[i] ~ Normal(means[i], variances[i]) | observed = 
+    // permutations ~ 
+  
+

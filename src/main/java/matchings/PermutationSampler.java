@@ -35,7 +35,7 @@ public class PermutationSampler implements Sampler {
   @Override
   public void execute(Random rand) {
 	  // Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
-	  // (probably bad attempt) K, Gio, Kevin
+	  // (probably bad attempt as it is now) K, Gio, Kevin
 	  
 	  double logDensityBefore = logDensity();
 	  double[] Qij = getQ();

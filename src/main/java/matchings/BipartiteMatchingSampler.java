@@ -1,159 +1,124 @@
 package matchings;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.*;
+import org.apache.commons.codec.net.QCodec;
 
-import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
-
-import com.mxgraph.shape.mxActorShape;
-
-//time 91s, 73s, 68s, 83s
-
-//import bayonet.distributions.Multinomial;
 import bayonet.distributions.Random;
-import bayonet.math.SpecialFunctions;
 import blang.core.LogScaleFactor;
 import blang.distributions.Generators;
 import blang.mcmc.ConnectedFactor;
 import blang.mcmc.SampledVariable;
 import blang.mcmc.Sampler;
+import briefj.collections.UnorderedPair;
+
 //import briefj.collections.UnorderedPair;
 
 /**
- * Each time a Permutation is encountered in a Blang model, 
- * this sampler will be instantiated. 
- */
+* Each time a Permutation is encountered in a Blang model, 
+* this sampler will be instantiated. 
+*/
 public class BipartiteMatchingSampler implements Sampler {
-  /**
-   * This field will be populated automatically with the 
-   * permutation being sampled. 
-   */
-  @SampledVariable BipartiteMatching matching;
-  /**
-   * This will contain all the elements of the prior or likelihood 
-   * (collectively, factors), that depend on the permutation being 
-   * resampled. 
-   */
-  @ConnectedFactor List<LogScaleFactor> numericFactors;
-
+/**
+ * This field will be populated automatically with the 
+ * permutation being sampled. 
+ */
+@SampledVariable BipartiteMatching matching;
+/**
+ * This will contain all the elements of the prior or likelihood 
+ * (collectively, factors), that depend on the permutation being 
+ * resampled. 
+ */
+@ConnectedFactor List<LogScaleFactor> numericFactors;
   @Override
   public void execute(Random rand) {
+	  // Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
+	  // (probably bad attempt as it is now) K, Gio, Kevin
 	  
-	  double normF, //normalizing factor for locally balanced
-	  qAfterGivenBefore, 
-	  qBeforeGivenAfter, 
-	  logQAfterGivenBefore, 
-	  logQBeforeGivenAfter;
-	  int numConnected,
-	  size = matching.componentSize();
-	  ArrayList<Double> probVector;
-	  
-	  //get the current log density
 	  double logDensityBefore = logDensity();
+	  double[] Qij = getQ();
 	  
-	  ArrayList <BipartiteMatching> nextStates; 
-	  for (int i = 0; i < size; i++) {
-		  if (matching.free1().contains(i)) {
-//			  #delete one edge
-			  // add new matching to nextStates
-//			  #get logDensity for the new matching
-			  // add logDensityAfter to list of prob
-			  // undo the operation
-			  ;	  }
+	  
+	 // Make a move
+	  int idx_ij = Generators.categorical(rand, Qij);
+	  UnorderedPair<Integer, Integer> pair = possibleMoves().get(idx_ij);
+	  Collections.swap(matching.getConnections(), pair.getFirst(), pair.getSecond());
+	  
+  
+	  double logDensityAfter = logDensity();
+	  double[] Qji = getQ();
+	  
+	  
+	  int idx_ji = -1;
+	  for (int i = 0; i < Qji.length; i++) {
+		  if (possibleMoves().get(i).equals(pair))
+			  idx_ji = i;
+	  }
+   
+   double acceptPr = Math.min(1.0, Math.exp(logDensityAfter - logDensityBefore + Math.log(Qji[idx_ji]) - Math.log(Qij[idx_ij])));
 
-		  else {
-			  for (int j: matching.free2()) {
-//				  #add one edge
-				  // add new matching to nextStates
-//				  #get logDensityAfter for the new matching
-				  // add logDensity to list of prob
-				  // get 
-				  // undo the operation
+   if (Generators.bernoulli(rand, acceptPr))
+     ;
+   else
+     Collections.swap(matching.getConnections(), pair.getFirst(), pair.getSecond());
+   
+
+  }
+  
+  
+  
+  private ArrayList<UnorderedPair<Integer, Integer>> possibleMoves() {
+	  ArrayList<UnorderedPair<Integer, Integer>> nb = new ArrayList<UnorderedPair<Integer, Integer>>();
+	  for (int i = 0; i < matching.componentSize(); i++) {
+		  if (matching.free1().contains(i)) {
+			  UnorderedPair<Integer, Integer> pair = new UnorderedPair<Integer, Integer>(i, -1);
+			  nb.add(pair);
+		  }
+	  else {
+		  for (int j: matching.free2()) {
+			  UnorderedPair<Integer, Integer> pair = new UnorderedPair<Integer, Integer>(i, j);
+			  nb.add(pair);
 			  }
 			  
-			  Random.nextCategorical(rand, probVector)
-			  // alpah = 
+		  }
+	  }
+
+	  return nb;
+  }
+  
+  private double[] getQ() {
+
+	  ArrayList<UnorderedPair<Integer, Integer>> nb = possibleMoves();
 	 
-	  
-	  if (connectOp) {
-		  // get logQ's if a connection was made
-		  qAfterGivenBefore = Math.sqrt(1/(matching.componentSize() * matching.free2().size()));
-		  numConnected = matching.componentSize() - matching.free1().size();
-		  normF = Math.exp(SpecialFunctions.logBinomial(numConnected, 2)) + 
-				  matching.free1().size();
-		  logQAfterGivenBefore = Math.log (qAfterGivenBefore/normF);
-		  
-		  qBeforeGivenAfter = Math.sqrt(1/ (matching.componentSize() * matching.free2().size()));
-		  numConnected = matching.componentSize() - matching.free1().size();
-		  normF = Math.exp(SpecialFunctions.logBinomial(numConnected, 2)) + 
-				  matching.free1().size();
-		  logQBeforeGivenAfter = Math.log(qBeforeGivenAfter/normF);
-
-		  // create part of probability vector
-
-	  }
-	  
-	  else {
-		  // get q's if a connection was not made
-		  qAfterGivenBefore = Math.sqrt((1/matching.componentSize()));
-		  numConnected = matching.componentSize() - matching.free1().size();
-		  normF = Math.exp(SpecialFunctions.logBinomial(numConnected, 2)) + 
-				  matching.free1().size();
-		  logQAfterGivenBefore = Math.log (qAfterGivenBefore/normF);
-		  
-		  // if we don't make a connection operation, disconnect 
-		  matching.getConnections().set(i, BipartiteMatching.FREE);
-		  
-		  qBeforeGivenAfter = Math.sqrt(1/ (matching.componentSize() * matching.free2().size()));
-		  numConnected = matching.componentSize() - matching.free1().size();
-		  normF = Math.exp(SpecialFunctions.logBinomial(numConnected, 2)) + 
-				  matching.free1().size();
-		  logQBeforeGivenAfter = Math.log(qBeforeGivenAfter/normF);
-	  }
-	  	  
-	  //get our new logDensity
-	  double logDensityAfter = logDensity();
-	  
-	  // acceptance probability
-	  double acceptPr = Math.min(1.0, Math.exp(logDensityAfter + logQBeforeGivenAfter - 
-			  logDensityBefore - logQAfterGivenBefore));
-	  
-	  if (Generators.bernoulli(rand, acceptPr)){
-	  // move to next state
-		  ;
-		  }
-	  //else, go back
-	  else {
-		  if (connectOp) {
-			  // disconnect
-			  matching.getConnections().set(i, BipartiteMatching.FREE);
-		  }
-		  
-		  // reconnect
-		  else {
-			  matching.getConnections().set(i, j);
-			  }
-		  }
-	  }
+	  ArrayList<Double> q = new ArrayList<Double>();
+	  Double sum = 0.0;  
+   for (UnorderedPair<Integer, Integer> p: nb) {
+	   int before = matching.getConnections().get(p.getFirst());
+	   matching.getConnections().set(p.getFirst(), p.getSecond());
+	   double prob = Math.exp(0.5*logDensity());
+	   matching.getConnections().set(p.getFirst(), before);
+	   q.add(prob/nb.size());
+	   sum = sum + prob;
+   }
+   
+   double[] Q = new double[q.size()];
+   for (int i = 0; i < q.size(); i++) {
+	   Q[i] = q.get(i) / sum;
+   }
+   
+   
+  return Q;
+  }
+  
+  
   
   private double logDensity() {
     double sum = 0.0;
     for (LogScaleFactor f : numericFactors)
       sum += f.logDensity();
     return sum;
-    }
-  private double nchoosek(int n, int k) {
-		return Math.rint(Math.exp(SpecialFunctions.logBinomial(n, k)));
-	}
-  
-  private BipartiteMatching nextMatching(BipartiteMatching m) {;}
-
-				  
-			  
-			  
-			  
-			  
-		
-		  
   }
-
+}

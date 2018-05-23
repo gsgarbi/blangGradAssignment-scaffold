@@ -21,7 +21,7 @@ import java.util.List
  * are automatically implemented, as well as other nice defaults 
  * (see the xtend documentation for details). 
  */
-@Samplers(PermutationSampler)
+@Samplers(PermutationSamplerLB)
 @Data class Permutation extends MatchingBase {
   /**
    * Sample an independent uniform permutation in place.

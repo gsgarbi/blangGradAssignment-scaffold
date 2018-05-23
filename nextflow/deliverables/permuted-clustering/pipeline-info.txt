@@ -1,0 +1,4 @@
+scriptName: permuted-clustering.nf
+start: Wed May 23 14:31:12 PDT 2018
+runName: sharp_kare
+nextflow.version: 0.29.1

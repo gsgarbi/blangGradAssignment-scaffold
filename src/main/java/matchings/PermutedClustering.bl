@@ -1,4 +1,4 @@
-package matchings
+ package matchings
 
 import matchings.Permutation
 
@@ -44,29 +44,17 @@ for (Integer i: 0 ..< nGroups){
 	permutations.get(i) ~ UniformPermutation
 	
 	for (Integer j: 0 ..< groupSize){
-		
-	
-	  observations.getRealVar(i,j) | Permutation perm = permutations.get(i), means, variances, j ~ 
-	  Normal(
-	  	means    .get(perm.getConnections.get(j)), 
-	  	variances.get(perm.getConnections.get(j))
-	  )
-	  
-	  // concatenate vectors?
-	}
-}
+		observations.getRealVar(i,j) | Permutation perm = permutations.get(i), 
+	  												   means, 
+	  												   variances, 
+	  												   j ~ 
+	  												   		Normal(means    .get(perm.getConnections.get(j)), 
+	  												   	           variances.get(perm.getConnections.get(j)))
+	  												   	          }
+	  												   	          }
 
     
     
-//    permutations.get(i) | means.get(i) ~ 
-//    
-//    new PMF<Integer> [
-//    	
-//    	for (j: nGroups){
-//    		
-//    increment()
-
-//    
 
 
     
@@ -75,22 +63,3 @@ for (Integer i: 0 ..< nGroups){
     	
 
     }
-    
-    
-    
-
-
-//    for (int i: 0 ..< nGroups){
-//    	permutations.get(i).getConnections 
-//    }
-//    for (int i: 0 ..<groupSize){}
-//    
-//    {
-    	
-
-    	
-    
-    // scores[i] ~ Normal(means[i], variances[i]) | observed = 
-    // permutations ~ 
-  
-

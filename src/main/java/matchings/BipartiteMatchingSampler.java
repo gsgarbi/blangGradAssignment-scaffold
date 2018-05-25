@@ -18,7 +18,7 @@ import blang.mcmc.Sampler;
  * Each time a Permutation is encountered in a Blang model, 
  * this sampler will be instantiated. 
  */
-public class BipartiteMatchingSamplerBLBadAlg implements Sampler {
+public class BipartiteMatchingSampler implements Sampler {
   /**
    * This field will be populated automatically with the 
    * permutation being sampled. 

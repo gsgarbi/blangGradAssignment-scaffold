@@ -1,12 +1,11 @@
 package matchings;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jdt.internal.formatter.FormatJavadocBlock;
-import org.jgraph.graph.ConnectionSet;
-
-import bayonet.math.SpecialFunctions;
+import org.apache.commons.codec.net.QCodec;
 
 import bayonet.distributions.Random;
 import blang.core.LogScaleFactor;
@@ -16,13 +15,11 @@ import blang.mcmc.SampledVariable;
 import blang.mcmc.Sampler;
 import briefj.collections.UnorderedPair;
 
-
-
 /**
  * Each time a Permutation is encountered in a Blang model, 
  * this sampler will be instantiated. 
  */
-public class PermutationSampler implements Sampler {
+public class PermutationSamplerLB implements Sampler {
   /**
    * This field will be populated automatically with the 
    * permutation being sampled. 
@@ -34,29 +31,81 @@ public class PermutationSampler implements Sampler {
    * resampled. 
    */
   @ConnectedFactor List<LogScaleFactor> numericFactors;
-  
-  
-  
-  
 
   @Override
   public void execute(Random rand) {
-	  UnorderedPair<Integer, Integer> pair = Generators.distinctPair(rand, permutation.componentSize());
-	    double logDensityBefore = logDensity();
-	    Collections.swap(permutation.getConnections(), pair.getFirst(), pair.getSecond());
-	    double logDensityAfter = logDensity();
-	    double acceptPr = Math.min(1.0, Math.exp(logDensityAfter - logDensityBefore)); 
-	    if (Generators.bernoulli(rand, acceptPr))
-	      ;
-	    else
-	      Collections.swap(permutation.getConnections(), pair.getFirst(), pair.getSecond());
+	  // Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
+	  // (probably bad attempt as it is now) K, Gio, Kevin
 	  
-		
-	}
+	  double logDensityBefore = logDensity();
+	  double[] Qij = getQ();
+	  
+	  
+	 // Make a move
+	  int idx_ij = Generators.categorical(rand, Qij);
+	  UnorderedPair<Integer, Integer> pair = possibleMoves().get(idx_ij);
+	  Collections.swap(permutation.getConnections(), pair.getFirst(), pair.getSecond());
+	  
+  
+	  double logDensityAfter = logDensity();
+	  double[] Qji = getQ();
+	  
+	  
+	  int idx_ji = -1;
+	  for (int i = 0; i < Qji.length; i++) {
+		  if (possibleMoves().get(i).equals(pair))
+			  idx_ji = i;
+	  }
+   
+   double acceptPr = Math.min(1.0, Math.exp(logDensityAfter - logDensityBefore + Math.log(Qji[idx_ji]) - Math.log(Qij[idx_ij])));
 
+   if (Generators.bernoulli(rand, acceptPr))
+     ;
+   else
+     Collections.swap(permutation.getConnections(), pair.getFirst(), pair.getSecond());
+   
+
+  }
   
   
- 
+  
+  private ArrayList<UnorderedPair<Integer, Integer>> possibleMoves() {
+	  ArrayList<UnorderedPair<Integer, Integer>> nb = new ArrayList<UnorderedPair<Integer, Integer>>();
+	  for (int i = 0; i < permutation.componentSize(); i++) {
+		  for (int j = i+1; j < permutation.componentSize(); j++) {
+			  UnorderedPair<Integer, Integer> pair = new UnorderedPair<Integer, Integer>(i, j);
+
+			  nb.add(pair);
+		  }
+	  }
+	  return nb;
+  }
+  
+  private double[] getQ() {
+	  int size = permutation.componentSize();
+
+	  ArrayList<UnorderedPair<Integer, Integer>> nb = possibleMoves();
+	 
+	  ArrayList<Double> q = new ArrayList<Double>(size*(size-1)/2);
+	  Double sum = 0.0;  
+   for (UnorderedPair<Integer, Integer> p: nb) {
+	   Collections.swap(permutation.getConnections(), p.getFirst(), p.getSecond());
+	   double prob = Math.exp(0.5*logDensity());
+	   Collections.swap(permutation.getConnections(), p.getFirst(), p.getSecond());
+	   q.add(prob);
+	   sum = sum + prob;
+   }
+   
+   double[] Q = new double[q.size()];
+   for (int i = 0; i < q.size(); i++) {
+	   Q[i] = q.get(i) / sum;
+   }
+   
+   
+  return Q;
+  }
+  
+  
   
   private double logDensity() {
     double sum = 0.0;

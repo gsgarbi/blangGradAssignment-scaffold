@@ -35,22 +35,18 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 	@ConnectedFactor List<LogScaleFactor> numericFactors;
 	@Override
 	public void execute(Random rand) {
-		// Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
-		// (probably bad attempt as it is now) K, Gio, Kevin
 
+		// Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
 		double logDensityBefore = logDensity();
 		double[] Qij = getQ();
-
 
 		// Make a move
 		int idx_ij = Generators.categorical(rand, Qij);
 		UnorderedPair<Integer, Integer> pair = possibleMoves().get(idx_ij);
 		Collections.swap(matching.getConnections(), pair.getFirst(), pair.getSecond());
 
-
 		double logDensityAfter = logDensity();
 		double[] Qji = getQ();
-
 
 		int idx_ji = -1;
 		for (int i = 0; i < Qji.length; i++) {
@@ -64,13 +60,14 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 			;
 		else
 			Collections.swap(matching.getConnections(), pair.getFirst(), pair.getSecond());
-
-
 	}
 
 
-
 	private ArrayList<UnorderedPair<Integer, Integer>> possibleMoves() {
+		// input: 
+		// output: all possible next states
+		//         ArrayList<UnorderedPair<Integer, Integer>> (vector of pairs of integers)
+
 		ArrayList<UnorderedPair<Integer, Integer>> nb = new ArrayList<UnorderedPair<Integer, Integer>>();
 		for (int i = 0; i < matching.componentSize(); i++) {
 			if (matching.free1().contains(i)) {
@@ -82,14 +79,15 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 					UnorderedPair<Integer, Integer> pair = new UnorderedPair<Integer, Integer>(i, j);
 					nb.add(pair);
 				}
-
 			}
 		}
-
 		return nb;
 	}
 
+
 	private double[] getQ() {
+		// input:
+		// output: normalized proposed distribution
 
 		ArrayList<UnorderedPair<Integer, Integer>> nb = possibleMoves();
 
@@ -108,11 +106,8 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 		for (int i = 0; i < q.size(); i++) {
 			Q[i] = q.get(i) / sum;
 		}
-
-
 		return Q;
 	}
-
 
 
 	private double logDensity() {

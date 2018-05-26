@@ -31,7 +31,11 @@ import java.util.List
    */
   def int componentSize() { 
     return connections.size
-  } 
+  }
+  
+  def String gioPrint(){
+  	return connections.toString
+  }
   
   override String toString() { 
     return connections.toString

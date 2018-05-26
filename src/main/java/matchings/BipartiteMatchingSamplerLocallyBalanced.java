@@ -1,11 +1,11 @@
 package matchings;
 
 import java.util.ArrayList;
-import java.util.Collection;
+//import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.codec.net.QCodec;
+//import org.apache.commons.codec.net.QCodec;
 
 import bayonet.distributions.Random;
 import blang.core.LogScaleFactor;
@@ -35,6 +35,9 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 	@ConnectedFactor List<LogScaleFactor> numericFactors;
 	@Override
 	public void execute(Random rand) {
+		
+		System.out.println("File: BipartiteMatchingSamplerLocallyBalanced-not");
+		
 
 		// Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
 		double logDensityBefore = logDensity();
@@ -48,7 +51,7 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 		double logDensityAfter = logDensity();
 		double[] Qji = getQ();
 
-		int idx_ji = -1;
+		int idx_ji = 0;
 		for (int i = 0; i < Qji.length; i++) {
 			if (possibleMoves().get(i).equals(pair))
 				idx_ji = i;

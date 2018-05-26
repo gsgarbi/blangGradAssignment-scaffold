@@ -16,7 +16,7 @@ import briefj.collections.UnorderedPair;
  * Each time a Permutation is encountered in a Blang model, 
  * this sampler will be instantiated. 
  */
-public class BipartiteMatchingSamplerOriginal implements Sampler {
+public class BipartiteMatchingSamplerOriginal2 implements Sampler {
 	/**
 	 * This field will be populated automatically with the 
 	 * permutation being sampled. 
@@ -31,6 +31,8 @@ public class BipartiteMatchingSamplerOriginal implements Sampler {
 
 	@Override
 	public void execute(Random rand) {
+		
+		System.out.println("File: BipartiteMatchingSamplerOriginal");
 
 		//get the current log density
 		double logDensityBefore = logDensity();

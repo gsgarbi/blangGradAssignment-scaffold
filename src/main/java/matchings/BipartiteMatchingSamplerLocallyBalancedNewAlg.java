@@ -44,7 +44,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 		
 		// Part1: Gather info about sigma_i
 		List<Integer> connectionsBefore = matching.getConnections();
-		System.out.println("connectionsBefore: " + matching.gioPrint());
+		System.out.println("connectionsBefore: " + matching.getConnections());
 		
 		double logDensityBefore = logDensity();
 		ArrayList<Pair> possibleMoves_ij = possibleMoves();
@@ -69,7 +69,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 		
 		
 		// Part3: Gather info about sigma_j
-		System.out.println("connectionsAfter: " + matching.gioPrint());
+		System.out.println("connectionsAfter: " + matching.getConnections());
 		
 		double logDensityAfter = logDensity();
 		ArrayList<Pair> possibleMoves_ji = possibleMoves();
@@ -104,7 +104,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 			;
 		else
 			matching.getConnections().set(undoMove.getFirst(), undoMove.getSecond());
-			System.out.println("back, original: " + matching.gioPrint() + connectionsBefore);
+			System.out.println("back, original: " + matching.getConnections() + connectionsBefore);
 		}
 
 	
@@ -114,7 +114,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 		// output: all possible next states
 		//         ArrayList<Pair> (vector of chosenMoves of integers)
 		
-		System.out.println("Start possibleMoves function for " + matching.gioPrint());
+		System.out.println("Start possibleMoves function for " + matching.getConnections());
 		
 
 		ArrayList<Pair> posMoves = new ArrayList<Pair>();

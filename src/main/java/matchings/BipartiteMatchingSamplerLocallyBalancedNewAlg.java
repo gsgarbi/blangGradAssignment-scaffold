@@ -2,7 +2,7 @@ package matchings;
 
 import java.util.ArrayList;
 //import java.util.Collection;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.List;
 
 //import org.apache.commons.codec.net.QCodec;
@@ -13,11 +13,9 @@ import blang.distributions.Generators;
 import blang.mcmc.ConnectedFactor;
 import blang.mcmc.SampledVariable;
 import blang.mcmc.Sampler;
-import briefj.collections.UnorderedPair;
+//import briefj.collections.UnorderedPair;
 
 import matchings.Pair;
-
-
 
 /**
  * Each time a Permutation is encountered in a Blang model, 
@@ -37,9 +35,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 	@ConnectedFactor List<LogScaleFactor> numericFactors;
 	@Override
 	public void execute(Random rand) {
-
 		// Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
-		System.out.println("--------- File: BipartiteMatchingSamplerLocallyBalanced-newAlg ---------");
 		
 		
 		// Part1: Gather info about sigma_i
@@ -76,7 +72,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 		System.out.println("Possible moves ji: " + possibleMoves_ji);
 		
 
-		// Part4.1: Find how to undo changes
+		// Part4: Find how to undo changes
 		Pair undoMove = new Pair(-10,-10);
 		if (chosenMove.getSecond() == -1) {
 			undoMove = pairBefore;
@@ -85,21 +81,23 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 			undoMove = new Pair (iBefore, -1);
 		}
 		
-		// Part4.2: Find Qji to recover previous state
+		// Part5: Find Qji to recover previous state
 		int idx_ji = -10; // idx_ji serves to recover Qji
 		for (Pair m: possibleMoves_ji) {
-			if ((m.getFirst() == undoMove.getFirst()) & (m.getSecond() == undoMove.getSecond())){	
+			if ((m.getFirst() == undoMove.getFirst()) & 
+				(m.getSecond() == undoMove.getSecond())){	
 				idx_ji = possibleMoves_ji.indexOf(m);
 				break;
 			}
 		}
 		
 		
-		// Part5: Define alpha (probability of accepting proposal)
-		double acceptPr = Math.min(1.0, Math.exp(logDensityAfter - logDensityBefore + Math.log(Qji[idx_ji]) - Math.log(Qij[idx_ij])));
+		// Part6: Define alpha (probability of accepting proposal)
+		double acceptPr = Math.min(1.0, Math.exp(logDensityAfter - 
+				logDensityBefore + Math.log(Qji[idx_ji]) - Math.log(Qij[idx_ij])));
 		
 		
-		// Part6: Undo changes if test does not pass
+		// Part7: Undo changes if test does not pass
 		if (Generators.bernoulli(rand, acceptPr))
 			System.out.println("I have moved");
 		else {
@@ -111,6 +109,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 	
 	// Part7: Functions
 	private ArrayList<Pair> possibleMoves() {
+		// get neighbors
 		// input: 
 		// output: all possible next states
 		//         ArrayList<Pair> (vector of chosenMoves of integers)
@@ -118,12 +117,16 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 
 		ArrayList<Pair> posMoves = new ArrayList<Pair>();
 		for (int i = 0; i < matching.componentSize(); i++) {
-			if (!(matching.free1().contains(i))) { //check if vertex at position i in comp1 is not free
-				Pair chosenMove = new Pair(i, -1); //the possible move is to delete the connection
+			if (!(matching.free1().contains(i))) { 
+				//check if vertex at position i in comp1 is not free
+				Pair chosenMove = new Pair(i, -1); 
+				//the possible move is to delete the connection
 				posMoves.add(chosenMove);
 			}
 			else {
-				for (int j: matching.free2()) { //the possible moves are to create a connection to one of the free vertexes in comp2
+				for (int j: matching.free2()) { 
+					//the possible moves are to create a connection 
+					//to one of the free vertexes in comp2
 					Pair chosenMove = new Pair(i, j); 
 					posMoves.add(chosenMove);
 				}

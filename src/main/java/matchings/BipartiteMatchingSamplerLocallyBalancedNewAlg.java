@@ -55,13 +55,12 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 
 		// Part2: Make a move
 		int idx_ij= Generators.categorical(rand, Qij);
-		System.out.println("categorically chosen position: " + idx_ij);
 		
 		Pair chosenMove = possibleMoves_ij.get(idx_ij);
-		System.out.println("chosen move: " + chosenMove);
+		System.out.println("categorically chosen move: " + chosenMove);
 		
 		int iBefore = chosenMove.getFirst();
-		int jBefore = matching.getConnections().get(iBefore);
+		int jBefore = connectionsBefore.get(iBefore);
 		Pair pairBefore = new Pair (iBefore, jBefore);
 		
 		System.out.println("MOVE");
@@ -89,8 +88,9 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 		// Part4.2: Find Qji to recover previous state
 		int idx_ji = -10; // idx_ji serves to recover Qji
 		for (Pair m: possibleMoves_ji) {
-			if ( (m.getFirst() == undoMove.getFirst()) & (m.getSecond() == undoMove.getSecond())){	
+			if ((m.getFirst() == undoMove.getFirst()) & (m.getSecond() == undoMove.getSecond())){	
 				idx_ji = possibleMoves_ji.indexOf(m);
+				break;
 			}
 		}
 		
@@ -101,10 +101,11 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 		
 		// Part6: Undo changes if test does not pass
 		if (Generators.bernoulli(rand, acceptPr))
-			;
-		else
+			System.out.println("I have moved");
+		else {
 			matching.getConnections().set(undoMove.getFirst(), undoMove.getSecond());
-			System.out.println("back, original: " + matching.getConnections() + connectionsBefore);
+		System.out.println("I have stayed");
+		}
 		}
 
 	
@@ -113,8 +114,6 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 		// input: 
 		// output: all possible next states
 		//         ArrayList<Pair> (vector of chosenMoves of integers)
-		
-		System.out.println("Start possibleMoves function for " + matching.getConnections());
 		
 
 		ArrayList<Pair> posMoves = new ArrayList<Pair>();
@@ -135,6 +134,7 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 	
 
 	private double[] getQ(ArrayList<Pair> nb) {
+		// Informed proposals, proportional to sqrt(pi(y))
 		// input:
 		// output: normalized proposed distribution
 

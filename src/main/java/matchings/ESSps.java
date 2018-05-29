@@ -6,8 +6,10 @@ public class ESSps {
 	}
 	
 	public int subdivide() {
-		for (int i = 0; i < sampleSize(); i++)
+		for (int i = 0; i < sampleSize(); i++) {
+			;
+		}
 		return 0;
 	}
-
 }
+		

@@ -1,7 +1,5 @@
 package matchings;
 
-
-
 public class Pair {
 
     private final int element0;

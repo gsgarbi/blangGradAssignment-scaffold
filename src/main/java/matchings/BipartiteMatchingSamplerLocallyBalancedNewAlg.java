@@ -35,7 +35,8 @@ public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
 	@ConnectedFactor List<LogScaleFactor> numericFactors;
 	@Override
 	public void execute(Random rand) {
-		// Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
+		// Trying to implement ideas from Informed proposals 
+		// for local MCMC in discrete spaces
 		
 		
 		// Part1: Gather info about sigma_i

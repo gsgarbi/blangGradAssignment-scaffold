@@ -2,7 +2,7 @@ package blang.validation.internals.fixtures
 
 import briefj.collections.UnorderedPair
 
-import static blang.validation.internals.fixtures.Functions.squareIsingEdges
+
 
 model Ising {
   param Integer N ?: 5
@@ -10,20 +10,20 @@ model Ising {
 
   laws {
 
-    // Pairwise potentials
-    for (UnorderedPair<Integer, Integer> pair : squareIsingEdges(N)) {
-      | IntVar first  = vertices.get(pair.getFirst),
-        IntVar second = vertices.get(pair.getSecond)
-      ~ LogPotential(
-          if ((first < 0 || first > 1 || second < 0 || second > 1))
-            return NEGATIVE_INFINITY
-          else
-            return (2*first-1)*(2*second-1))
+//    // Pairwise potentials
+//    for (UnorderedPair<Integer, Integer> pair : squareIsingEdges(N)) {
+//      | IntVar first  = vertices.get(pair.getFirst),
+//        IntVar second = vertices.get(pair.getSecond)
+//      ~ LogPotential(
+//          if ((first < 0 || first > 1 || second < 0 || second > 1))
+//            return NEGATIVE_INFINITY
+//          else
+//            return (2*first-1)*(2*second-1))
     }
 
-    // Node potentials
-    for (IntVar vertex : vertices) {
-      vertex ~ Bernoulli(0.5)
+//    // Node potentials
+//    for (IntVar vertex : vertices) {
+//      vertex ~ Bernoulli(0.5)
     }
-  }
-}
+  
+

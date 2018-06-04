@@ -3,7 +3,8 @@ package matchings
 import org.eclipse.xtend.lib.annotations.Data
 import blang.inits.experiments.tabwriters.TidilySerializable
 import blang.inits.experiments.tabwriters.TidySerializer.Context
-import java.util.List
+import java.util.List;
+
 
 /**
  * Shared functionality and representation used by Permutation and 

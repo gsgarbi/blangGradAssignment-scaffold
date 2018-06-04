@@ -31,8 +31,6 @@ public class BipartiteMatchingSamplerOriginal2 implements Sampler {
 
 	@Override
 	public void execute(Random rand) {
-		
-		System.out.println("File: BipartiteMatchingSamplerOriginal");
 
 		//get the current log density
 		double logDensityBefore = logDensity();
@@ -96,10 +94,40 @@ public class BipartiteMatchingSamplerOriginal2 implements Sampler {
 
 
 		}
+		boolean saveTF = true;
+		
+		if (saveTF) {
+			String fn = "nonLB" + matching.componentSize() + ".txt";
+			saveTestFunction(fn);
 
-
-
+			
+		}
+		
+		
 	}
+
+	
+	
+
+	
+	// Part8: Functions
+
+	private int testFunction() {
+		return matching.componentSize() - matching.free1().size();
+	}
+	
+	public void saveTestFunction(String fn) {
+
+
+		String st = String.valueOf(testFunction());
+//		String c = String.valueOf(matching.getConnections());
+		SaveResults.generateCsvFile(fn, st+',');
+
+		}
+
+
+
+	
 
 	private double logDensity() {
 		double sum = 0.0;

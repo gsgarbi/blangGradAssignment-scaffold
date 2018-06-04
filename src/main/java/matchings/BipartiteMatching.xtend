@@ -13,6 +13,15 @@ import bayonet.distributions.Multinomial
 import blang.mcmc.Samplers
 import java.util.Set
 import java.util.ArrayList
+import blang.inits.DesignatedConstructor
+import blang.inits.ConstructorArg
+
+// compute ESS
+// run samplesr 1 -> ESS/sec
+// same for 2
+
+// log (medium ESS/s) vs log(compSize)
+// fij = prob that this score is coming from that player
 
 /**
  * We use the same representation as Permutation.xtend, but now 
@@ -20,12 +29,14 @@ import java.util.ArrayList
  * to contain a special value, FREE = -1, which means the vertex 
  * is not connected to anything.
  */
-@Samplers(BipartiteMatchingSamplerLocallyBalancedNewAlg)
+@Samplers(BipartiteMatchingSampler)
 @Data class BipartiteMatching extends MatchingBase {
   
   val public static int FREE = -1
   
-  new (int componentSize) {
+  //need to know what to use to init
+  @DesignatedConstructor
+  new (@ConstructorArg("size") int componentSize) {
     super(componentSize)
     sizeProbabilities = normalizations(componentSize)
     logNormalization = Multinomial.expNormalize(sizeProbabilities)
@@ -52,6 +63,15 @@ import java.util.ArrayList
     result.removeAll(connections)
     return new ArrayList(result)
   }
+  
+  def int numConnected() {
+			var int numCon = 0
+			for (int i: connections){
+				if (! (i == BipartiteMatching.FREE))
+					numCon += 1;			
+		}
+			return numCon;
+		}
   
   def void sampleUniform(Random random) {
     sort(connections)

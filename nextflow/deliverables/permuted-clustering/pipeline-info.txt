@@ -1,4 +1,4 @@
 scriptName: permuted-clustering.nf
-start: Fri May 25 12:31:15 PDT 2018
-runName: intergalactic_pike
-nextflow.version: 0.29.1
+start: Wed Jun 06 07:16:13 PDT 2018
+runName: voluptuous_mccarthy
+nextflow.version: 0.28.0

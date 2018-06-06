@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-#! touch create, cat concatenate string, echo print, cash deep generate data, set environment
+// touch create, cat concatenate string, echo print, cash deep generate data, set environment
 
 deliverableDir = 'deliverables/' + workflow.scriptName.replace('.nf','')
 
@@ -50,7 +50,7 @@ process generateData {
     file 'generated' into data
     
   """
-#! generate data from the matrix observations. Sample from permutations
+// generate data from the matrix observations. Sample from permutations
   set -e
   java -cp `cat classpath` -Xmx2g matchings.PermutedClustering \
     --experimentConfigs.managedExecutionFolder false \

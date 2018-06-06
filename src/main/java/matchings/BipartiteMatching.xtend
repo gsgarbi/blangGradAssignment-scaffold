@@ -29,7 +29,7 @@ import blang.inits.ConstructorArg
  * to contain a special value, FREE = -1, which means the vertex 
  * is not connected to anything.
  */
-@Samplers(BipartiteMatchingSampler)
+@Samplers(BipartiteMatchingSamplerLocallyBalancedNewAlg)
 @Data class BipartiteMatching extends MatchingBase {
   
   val public static int FREE = -1

@@ -25,7 +25,7 @@ import matchings.Pair;
  * Each time a Permutation is encountered in a Blang model, 
  * this sampler will be instantiated. 
  */
-public class BipartiteMatchingSamplerLocallyBalancedNewAlg implements Sampler {
+public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 	/**
 	 * This field will be populated automatically with the 
 	 * permutation being sampled. 

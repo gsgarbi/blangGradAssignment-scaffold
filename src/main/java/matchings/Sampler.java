@@ -27,9 +27,7 @@ import javax.sound.sampled.DataLine;
 import javax.xml.crypto.Data;
 import java.util.Collections;
 
-
 public class Sampler {
-
 
 	private final Integer usedSS, compSize, dataLength, sqrtUsedSS;
 	private ArrayList<Integer> vals    = 
@@ -62,11 +60,11 @@ public class Sampler {
 			
 			sampler.testF();
 			
-			sampler.getI();
+			sampler.computeI();
 			
-			sampler.getEES();
+			sampler.computeESS();
 			
-			sampler.getESS_per_ms();
+			sampler.computeESSps();
 			
 			String message = String.format("%s has ESS per ms = %f", sampler.name, sampler.ESSpms);
 			
@@ -119,23 +117,22 @@ public class Sampler {
 		return Double.parseDouble(row2.substring(16));
 	}
 	
-	public void getI() {
+	public void computeI() {
 		for (int i = 0; i < sqrtUsedSS; i++) {
 				I.add(meanInt(this.fData.subList(i*sqrtUsedSS, (i+1)*sqrtUsedSS)));
 			}
 		}
 	
-	public void getEES() {
+	public void computeESS() {
 		double VX = varInt(this.fData);
 		double VI = var(this.I);
 		
 		this.EES = this.sqrtUsedSS*VX/VI;
 	}
 	
-	public void getESS_per_ms() throws IOException {
+	public void computeESSps() throws IOException {
 		this.ESSpms = this.EES / this.samplingTime();
 	}
-	
 	
 	public static double mean(List<Double> s) {
 		double sum = 0.0;

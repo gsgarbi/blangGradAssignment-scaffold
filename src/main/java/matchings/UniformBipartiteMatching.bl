@@ -17,5 +17,3 @@ model UniformBipartiteMatching {
   }
   
 }
-
-// blang documentation, getting started performing inference (website)

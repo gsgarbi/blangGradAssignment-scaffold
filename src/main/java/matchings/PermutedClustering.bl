@@ -17,7 +17,6 @@ model PermutedClustering {
    
   
   laws {
-    // Fill this. 
     variances.get(0) ~ Exponential(10.0)
     means.get(0) ~ ContinuousUniform(0.0, 1.0)
     

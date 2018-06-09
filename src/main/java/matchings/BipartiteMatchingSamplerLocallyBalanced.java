@@ -40,8 +40,7 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 	@Override
 	public void execute(Random rand) {
 		// Trying to implement ideas from Informed proposals for local MCMC in discrete spaces
-		
-		boolean saveTF = true;
+
 		
 		// Part1: Gather info about sigma_i
 		List<Integer> connectionsBefore = matching.getConnections();
@@ -100,36 +99,26 @@ public class BipartiteMatchingSamplerLocallyBalanced implements Sampler {
 		// Part7: Undo changes if test does not pass
 		if (!(Generators.bernoulli(rand, acceptPr)))
 			connectionsAfter.set(undoMove.getFirst(), undoMove.getSecond());
-		
-		
-		
-		//EXTRA: Save testFunction image
-		saveTF = true;
-
-		if (saveTF) {
-			String fn = "LB" + matching.componentSize() + ".txt";
-			saveTestFunction(fn);
-		}
-		}
-
-	
-	
-
-	
-	// Part8: Functions
-
-	private int testFunction() {
-		return matching.componentSize() - matching.free1().size();
 	}
 	
-	public void saveTestFunction(String fn) {
+	
+	
 
-
-		String st = String.valueOf(testFunction());
-//		String c = String.valueOf(matching.getConnections());
-		SaveResults.generateCsvFile(fn, st+',');
-
-		}
+	
+//	// Part8: Functions
+//
+//	private int testFunction() {
+//		return matching.componentSize() - matching.free1().size();
+//	}
+//	
+//	public void saveTestFunction(String fn) {
+//
+//
+//		String st = String.valueOf(testFunction());
+////		String c = String.valueOf(matching.getConnections());
+//		SaveResults.generateCsvFile(fn, st+',');
+//
+//		}
 	
 
 

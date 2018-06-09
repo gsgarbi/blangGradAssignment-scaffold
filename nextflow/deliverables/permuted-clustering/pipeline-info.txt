@@ -1,4 +1,0 @@
-scriptName: permuted-clustering.nf
-start: Wed Jun 06 07:16:13 PDT 2018
-runName: voluptuous_mccarthy
-nextflow.version: 0.28.0

@@ -53,17 +53,6 @@ public class PermutationSampler implements Sampler {
 	      ;
 	    else
 	      Collections.swap(permutation.getConnections(), pair.getFirst(), pair.getSecond());
-	    
-	    PrintWriter writer;
-		try {
-			writer = new PrintWriter("samples.csv", "UTF-8");
-		    writer.println("The first line");
-		    writer.println("The second line");
-		    writer.close();
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	  
 		

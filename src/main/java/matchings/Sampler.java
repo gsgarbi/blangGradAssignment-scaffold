@@ -48,6 +48,7 @@ public class Sampler {
 	
 	public static void main(String[] args) throws IOException {
 		
+		
 
 		String[][] files = {
 				{"Non Locally Optimal", "2018-05-31-12-12-43-uLsqGaqe.exec/"}, //non lb
@@ -73,7 +74,7 @@ public class Sampler {
 		}
 	}
 	
-	
+
 	public Sampler(String[] info) throws IOException {
 		this.name = info[0];
 		this.folder = info[1];

@@ -19,7 +19,6 @@ mkdir -p $deliverableDirPath
 """
 }
 
-
 process build {
   cache false //originall false
   input:
@@ -28,7 +27,6 @@ process build {
     file 'jars_hash' into jars_hash
     file 'classpath' into classpath
   """
-  
   set -e
   current_dir=`pwd`
   cd ../../../..
@@ -46,11 +44,7 @@ process build {
   done
   cat temp_classpath | paste -sd ":" - > classpath
   """
-
-
 }
-
-
 
 jars_hash.into {
   jars_hash1
@@ -69,9 +63,7 @@ process generateData {
     file classpath1
     file jars_hash1
   output:
-    file "group-size$i" into data
-    
-    
+    file "group-size$i" into data 
   """
   set -e
   java -cp `cat classpath` -Xmx2g matchings.$sampler \
@@ -85,7 +77,6 @@ process generateData {
     mkdir -p group-size$i/dataDir
     cp -r samples group-size$i/dataDir
   """
-  
 }
 
 
@@ -138,9 +129,6 @@ process calculateESS {
 
 }
 
-
-
-
 process putTogether {
 echo false
 cache true
@@ -148,8 +136,7 @@ cache true
   input:
     each i from minGroupSize..maxGroupSize
     file gs from groupSizeFolders.collect()
-
- 
+    
   exec:
   ESStable = file ("$deliverableDirPath/ESStable.csv")
   ESStable.text = 'GroupSize TestFunction ESS/s\n'
@@ -157,7 +144,4 @@ cache true
   essCSVFile = file("$deliverableDirPath/group-size$i/ess_per_sec.csv")
   eachTXT = essCSVFile.getText().replace(",", " ")
   ESStable << eachTXT
-
-
-
 }

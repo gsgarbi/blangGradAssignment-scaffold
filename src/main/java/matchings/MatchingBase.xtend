@@ -23,6 +23,7 @@ import java.util.List;
   /**
    * Initialize to the identity permutation.
    */
+
   new (int componentSize) {
     connections = (0 ..< componentSize).toList
   }

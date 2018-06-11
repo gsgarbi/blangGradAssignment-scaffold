@@ -1,0 +1,11 @@
+Jun-11 06:29:08.653 [main] DEBUG nextflow.cli.Launcher - $> /usr/local/bin/nextflow run UniformPermutation.nf
+Jun-11 06:29:08.734 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 0.30.0
+Jun-11 06:29:08.848 [main] DEBUG nextflow.cli.Launcher - Operation aborted
+nextflow.exception.AbortOperationException: Not a valid project name: UniformPermutation.nf
+	at nextflow.scm.AssetManager.resolveName(AssetManager.groovy:246)
+	at nextflow.scm.AssetManager.build(AssetManager.groovy:128)
+	at nextflow.scm.AssetManager.<init>(AssetManager.groovy:112)
+	at nextflow.cli.CmdRun.getScriptFile(CmdRun.groovy:284)
+	at nextflow.cli.CmdRun.run(CmdRun.groovy:207)
+	at nextflow.cli.Launcher.run(Launcher.groovy:428)
+	at nextflow.cli.Launcher.main(Launcher.groovy:582)

@@ -19,7 +19,7 @@ mkdir -p $deliverableDirPath
 }
 
 process build {
-  cache false //originall false
+  cache true//originall false
   input:
   file f from files
   output:
@@ -80,7 +80,6 @@ process generateData {
 
 
 process generateSamples {
-  echo false
   cache true
   input:
     each i from minGroupSize..maxGroupSize
@@ -114,6 +113,7 @@ process generateSamples {
 
 
 process calculateESS {
+  cache false
   echo false
   publishDir deliverableDirPath
   cache true
@@ -133,10 +133,10 @@ echo false
 cache false
 
   input:
-    file groupSizeFolders
+    file gf from groupSizeFolders.collect()
     
   exec:
-  ESStable = file ("$deliverableDirPath/ESStable-${sampler}.csv")
+  ESStable = file ("$deliverableDirPath/ESStable.csv")
   ESStable.text = 'GroupSize, TestFunction, ESS/s\n'
   
   //keep order:

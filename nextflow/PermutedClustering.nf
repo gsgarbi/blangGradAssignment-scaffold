@@ -3,14 +3,13 @@
 // shoud be given as arguments:
 nGroups = 2
 minGroupSize = 3
-maxGroupSize = 10
+maxGroupSize =6
 
 sampler =  workflow.scriptName.replace('.nf', '')
 
 deliverableDirPath = "deliverables/$sampler/nGroups$nGroups"
 
 process createDirs{
-// where we will store our results
 cache true
 output:
 file "$deliverableDirPath" into files
@@ -131,17 +130,17 @@ process calculateESS {
 
 process putTogether {
 echo false
-cache true
+cache false
 
   input:
-    each i from minGroupSize..maxGroupSize
-    file gs from groupSizeFolders.collect()
+    file groupSizeFolders
     
   exec:
-  ESStable = file ("$deliverableDirPath/ESStable.csv")
-  ESStable.text = 'GroupSize TestFunction ESS/s\n'
+  ESStable = file ("$deliverableDirPath/ESStable-${sampler}.csv")
+  ESStable.text = 'GroupSize, TestFunction, ESS/s\n'
   
-  essCSVFile = file("$deliverableDirPath/group-size$i/ess_per_sec.csv")
-  eachTXT = essCSVFile.getText().replace(",", " ")
-  ESStable << eachTXT
+  for (j in minGroupSize..maxGroupSize){
+  essCSVFile = file("$deliverableDirPath/group-size$j/ess_per_sec.csv")
+  eachTXT = essCSVFile.getText().replace('"', '')
+  ESStable << eachTXT}
 }

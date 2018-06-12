@@ -139,6 +139,7 @@ cache false
   ESStable = file ("$deliverableDirPath/ESStable-${sampler}.csv")
   ESStable.text = 'GroupSize, TestFunction, ESS/s\n'
   
+  //keep order:
   for (j in minGroupSize..maxGroupSize){
   essCSVFile = file("$deliverableDirPath/group-size$j/ess_per_sec.csv")
   eachTXT = essCSVFile.getText().replace('"', '')
